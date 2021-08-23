@@ -54,7 +54,7 @@ std::vector<uint64_t> build_dataset(uint64_t size, Generator& gen) {
 }
 
 void run_benchmarks(const std::string& name, const std::vector<uint64_t>& dataset) {
-  benchmark("XX-" + name, dataset, city);
+  benchmark("CITY-" + name, dataset, city);
   benchmark("XX-" + name, dataset, xx);
   benchmark("CRC-" + name, dataset, crc);
 }
