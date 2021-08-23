@@ -1,6 +1,6 @@
 project(
     'hashfn-benchmark',
-    'cpp',
+    ['c', 'cpp'],
     default_options: [
         'buildtype=release',
         'optimization=3',
@@ -22,11 +22,13 @@ dependencies = [
 srcs = [
   'main.cpp',
   'city.cpp',
-  'xxhash.cpp',
   'xorwow.cpp',
+  'xxHash/xxhash.c',
 ]
 
 include_directories = [
+  'wyhash',
+  'xxHash',
 ]
 
 executable(

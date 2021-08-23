@@ -9,7 +9,7 @@
 #include "xxhash.h"
 #include "zipf.h"
 #include "xorwow.h"
-// #include "xxh3.h"
+#include "wyhash.h"
 
 typedef void(*hashfn)(const void*);
 
@@ -17,12 +17,20 @@ void city(const void* buff) {
   CityHash64((char*)buff, 8);
 }
 
-void xx(const void* buff) {
+void xxh(const void* buff) {
   XXH64(buff, 8, 0);
+}
+
+void xxh3(const void* buff) {
+  XXH3_64bits_withSeed(buff, 8, 0);
 }
 
 void crc(const void* buff) {
   _mm_crc32_u64(0, *(uint64_t*)buff);
+}
+
+void wyhash(const void* buff) {
+  wyhash(buff, 8, 0, _wyp);
 }
 
 void run_hashfn(const std::vector<uint64_t>& dataset, hashfn fn) {
@@ -55,8 +63,10 @@ std::vector<uint64_t> build_dataset(uint64_t size, Generator& gen) {
 
 void run_benchmarks(const std::string& name, const std::vector<uint64_t>& dataset) {
   benchmark("CITY-" + name, dataset, city);
-  benchmark("XX-" + name, dataset, xx);
+  benchmark("XXH-" + name, dataset, xxh);
+  benchmark("XXH3-" + name, dataset, xxh3);
   benchmark("CRC-" + name, dataset, crc);
+  benchmark("WYHASH-" + name, dataset, wyhash);
 }
 
 int main() {
