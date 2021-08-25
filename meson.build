@@ -24,11 +24,13 @@ srcs = [
   'city.cpp',
   'xorwow.cpp',
   'xxHash/xxhash.c',
+  'fnv/fnv.c',
 ]
 
 include_directories = [
   'wyhash',
   'xxHash',
+  'fnv',
 ]
 
 executable(

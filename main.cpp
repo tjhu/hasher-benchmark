@@ -10,6 +10,9 @@
 #include "zipf.h"
 #include "xorwow.h"
 #include "wyhash.h"
+extern "C" {
+#include "fnv.h"
+}
 
 typedef void(*hashfn)(const void*);
 
@@ -31,6 +34,21 @@ void crc(const void* buff) {
 
 void wyhash(const void* buff) {
   wyhash(buff, 8, 0, _wyp);
+}
+
+void fnv32(const void* buff) {
+  static uint32_t state_ = FNV1_32_INIT;
+  state_ = fnv_32_buf((void*)buff, 8, state_);
+}
+
+void fnv64(const void* buff) {
+  static uint64_t state_ = FNV1_64_INIT;
+  state_ = fnv_64_buf((void*)buff, 8, state_);
+}
+
+void fnv64a(const void* buff) {
+  static uint64_t state_ = FNV1A_64_INIT;
+  state_ = fnv_64a_buf((void*)buff, 8, state_);
 }
 
 void run_hashfn(const std::vector<uint64_t>& dataset, hashfn fn) {
@@ -67,6 +85,9 @@ void run_benchmarks(const std::string& name, const std::vector<uint64_t>& datase
   benchmark("XXH3-" + name, dataset, xxh3);
   benchmark("CRC-" + name, dataset, crc);
   benchmark("WYHASH-" + name, dataset, wyhash);
+  benchmark("FNV32-" + name, dataset, fnv32);
+  benchmark("FNV64-" + name, dataset, fnv64);
+  benchmark("FNV64a-" + name, dataset, fnv64a);
 }
 
 int main() {
